@@ -5,7 +5,6 @@ import {AsyncStorage, StyleSheet, View} from 'react-native';
 
 import Auth0 from 'react-native-auth0';
 import decode from 'jwt-decode';
-import FlipCard from 'react-native-flip-card';
 import SwarmDB from 'swarm-db';
 
 import Login from './Login';
