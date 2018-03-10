@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {GiftedChat} from './GiftedChat';
 
 type State = {
   messages: any[],
@@ -22,7 +22,7 @@ export default class Chat extends React.Component<*, State> {
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: 'https://facebook.github.io/react/img/logo_og.png',
+            avatar: 'https://avatars2.githubusercontent.com/u/848535?s=150&v=4',
           },
         },
       ],

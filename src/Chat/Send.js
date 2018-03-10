@@ -1,0 +1,58 @@
+/* eslint no-use-before-define: ["error", { "variables": false }] */
+
+import PropTypes from 'prop-types';
+import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, ViewPropTypes, Platform} from 'react-native';
+import Color from './Color';
+
+export default function Send({text, containerStyle, onSend, children, textStyle, label}) {
+  if (text.trim().length > 0 || Platform.OS === 'web') {
+    return (
+      <TouchableOpacity
+        style={[styles.container, containerStyle]}
+        onPress={() => {
+          if (text.trim()) {
+            onSend({text: text.trim()}, true);
+          }
+        }}
+        accessibilityTraits="button">
+        <View>{children || <Text style={[styles.text, textStyle]}>{label}</Text>}</View>
+      </TouchableOpacity>
+    );
+  }
+  return <View />;
+}
+
+const styles = StyleSheet.create({
+  container: {
+    height: 44,
+    justifyContent: 'flex-end',
+  },
+  text: {
+    color: Color.defaultBlue,
+    fontWeight: '600',
+    fontSize: 17,
+    backgroundColor: Color.backgroundTransparent,
+    marginBottom: 12,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+});
+
+Send.defaultProps = {
+  text: '',
+  onSend: () => {},
+  label: 'Send',
+  containerStyle: {},
+  textStyle: {},
+  children: null,
+};
+
+Send.propTypes = {
+  text: PropTypes.string,
+  onSend: PropTypes.func,
+  label: PropTypes.string,
+  containerStyle: ViewPropTypes.style,
+  textStyle: Text.propTypes.style,
+  children: PropTypes.element,
+};
