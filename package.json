@@ -6,8 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "postinstall": "./cp.sh",
     "test": "jest",
-    "start:web": "node scripts/start.js",
-    "build:web": "node scripts/build.js"
+    "start:web": "node web/scripts/start.js",
+    "build:web": "node web/scripts/build.js"
   },
   "dependencies": {
     "autoprefixer": "7.1.6",
