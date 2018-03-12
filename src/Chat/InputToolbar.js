@@ -2,7 +2,13 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View, Keyboard, ViewPropTypes, Platform } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Keyboard,
+  ViewPropTypes,
+  Platform
+} from 'react-native';
 
 import Composer from './Composer';
 import Send from './Send';
@@ -10,7 +16,6 @@ import Actions from './Actions';
 import Color from './Color';
 
 export default class InputToolbar extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -18,19 +23,25 @@ export default class InputToolbar extends React.Component {
     this.keyboardWillHide = this.keyboardWillHide.bind(this);
 
     this.state = {
-      position: Platform.OS === 'web' ? 'fixed' : 'absolute',
+      position: Platform.OS === 'web' ? 'fixed' : 'absolute'
     };
   }
 
   componentWillMount() {
-    if(Platform.OS !== 'web') { 
-      this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this.keyboardWillShow);
-      this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+    if (Platform.OS !== 'web') {
+      this.keyboardWillShowListener = Keyboard.addListener(
+        'keyboardWillShow',
+        this.keyboardWillShow
+      );
+      this.keyboardWillHideListener = Keyboard.addListener(
+        'keyboardWillHide',
+        this.keyboardWillHide
+      );
     }
   }
 
   componentWillUnmount() {
-    if(Platform.OS !== 'web') {
+    if (Platform.OS !== 'web') {
       this.keyboardWillShowListener.remove();
       this.keyboardWillHideListener.remove();
     }
@@ -38,13 +49,13 @@ export default class InputToolbar extends React.Component {
 
   keyboardWillShow() {
     this.setState({
-      position: 'relative',
+      position: 'relative'
     });
   }
 
   keyboardWillHide() {
     this.setState({
-      position: 'absolute',
+      position: 'absolute'
     });
   }
 
@@ -86,8 +97,11 @@ export default class InputToolbar extends React.Component {
   render() {
     return (
       <View
-        style={[styles.container, this.props.containerStyle, { position: this.state.position }]}
-      >
+        style={[
+          styles.container,
+          this.props.containerStyle,
+          { position: this.state.position }
+        ]}>
         <View style={[styles.primary, this.props.primaryStyle]}>
           {this.renderActions()}
           {this.renderComposer()}
@@ -97,7 +111,6 @@ export default class InputToolbar extends React.Component {
       </View>
     );
   }
-
 }
 
 const styles = StyleSheet.create({
@@ -107,20 +120,15 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     bottom: 0,
     left: 0,
-    right: 0,
-    ...Platform.select({
-      web: {
-        position: 'fixed',
-      }
-    }),
+    right: 0
   },
   primary: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'flex-end'
   },
   accessory: {
-    height: 44,
-  },
+    height: 44
+  }
 });
 
 InputToolbar.defaultProps = {
@@ -131,7 +139,7 @@ InputToolbar.defaultProps = {
   containerStyle: {},
   primaryStyle: {},
   accessoryStyle: {},
-  onPressActionButton: () => {},
+  onPressActionButton: () => {}
 };
 
 InputToolbar.propTypes = {
@@ -142,5 +150,5 @@ InputToolbar.propTypes = {
   onPressActionButton: PropTypes.func,
   containerStyle: ViewPropTypes.style,
   primaryStyle: ViewPropTypes.style,
-  accessoryStyle: ViewPropTypes.style,
+  accessoryStyle: ViewPropTypes.style
 };

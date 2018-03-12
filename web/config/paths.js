@@ -60,5 +60,8 @@ module.exports = {
     'react-clone-referenced-element',
     'react-native-scrollable-mixin',
     'react-native-lightbox',
+    'react-navigation',
+    'react-native-tab-view',
+    'react-native-safe-area-view',
   ].map(i => resolveApp(`node_modules/${i}`)),
 };

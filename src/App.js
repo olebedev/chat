@@ -1,81 +1,55 @@
 // @flow
 
 import * as React from 'react';
-import {AsyncStorage, StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import Auth0 from 'react-native-auth0';
-import decode from 'jwt-decode';
-import SwarmDB from 'swarm-db';
+import { authorize, logout, getUserInfo } from './auth0';
+import type { Profile } from './auth0';
 
 import Login from './Login';
 import Home from './navigation';
 
-const auth0 = new Auth0({domain: 'olebedev.eu.auth0.com', clientId: 'YbAHcczyP672C0uHggH2a7BHcuFiLYTt'});
-
-type Props = {};
-
 type State = {
+  profile?: Profile,
   initialized?: true,
-  credentials?: {
-    idToken: string,
-    tokenType: string,
-    accessToken: string,
-    expiresIn: number,
-  },
-  profile?: {
-    picture: string,
-    username: string,
-  },
   loading: boolean,
-  error?: any,
+  error?: any
 };
 
-export default class App extends React.Component<Props, State> {
-  state = {loading: false};
+export default class App extends React.Component<{}, State> {
+  state = { loading: false };
 
   onLogout = async () => {
-    await AsyncStorage.removeItem('~profile');
+    await logout();
     this.setState({
+      error: null,
       loading: false,
-      credentials: undefined,
-      profile: undefined,
+      profile: undefined
     });
   };
 
   onNext = async () => {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     try {
-      const credentials = await auth0.webAuth.authorize({
-        scope: 'openid profile email',
-        audience: 'https://olebedev.eu.auth0.com/userinfo',
-      });
-      const decoded = decode(credentials.idToken);
-      const p = {
-        credentials,
-        profile: decoded,
-      };
-      console.log(JSON.stringify(p, null, 2));
-      await AsyncStorage.setItem('~profile', JSON.stringify(p));
-      this.setState({
-        error: null,
-        loading: false,
-        ...p,
-      });
+      const profile = await authorize();
+      console.log(JSON.stringify(profile, null, 2));
+      this.setState({ profile });
     } catch (error) {
       this.setState({
         error,
-        loading: false,
+        loading: false
       });
     }
   };
 
   async componentWillMount(): Promise<void> {
-    const p = await AsyncStorage.getItem('~profile');
-    let state = {initialized: true};
-    if (p)
+    const profile = await getUserInfo();
+    console.log({ profile });
+    let state = { initialized: true };
+    if (profile)
       state = {
         ...state,
-        ...JSON.parse(p),
+        profile
       };
     this.setState(state);
   }
@@ -85,12 +59,14 @@ export default class App extends React.Component<Props, State> {
 
     return (
       <View style={styles.container}>
-        {!this.state.profile && <Login loading={this.state.loading} onPressNext={this.onNext} />}
+        {!this.state.profile && (
+          <Login loading={this.state.loading} onPressNext={this.onNext} />
+        )}
         {!!this.state.profile && (
           <Home
             screenProps={{
               logout: this.onLogout,
-              profile: this.state.profile,
+              profile: this.state.profile
             }}
           />
         )}
@@ -100,5 +76,5 @@ export default class App extends React.Component<Props, State> {
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1},
+  container: { flex: 1 }
 });

@@ -1,0 +1,39 @@
+#root > div > div > div > div > div > div > div > div > div > div > h1 {
+  margin: 0 auto !important;
+}
+
+#root
+  > div
+  > div
+  > div
+  > div
+  > div
+  > div
+  > div
+  > div
+  > div:nth-child(2)
+  > div
+  > h1 {
+  margin: 0 auto !important;
+}
+
+#root {
+  overflow: hidden;
+  height: 100vh;
+}
+
+#mobile {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  #root {
+    display: none;
+  }
+  #mobile {
+    padding: 50px 25px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    display: block;
+  }
+}

@@ -20,6 +20,8 @@
 .*/node_modules/metro/.*
 .*/node_modules/react-native-web/.*
 
+.*/node_modules/swarm-.*/__tests__/.*
+
 [include]
 
 [libs]
