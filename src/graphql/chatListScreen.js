@@ -19,6 +19,7 @@ export default gql`
           createdAt: id
           text
           user @ensure {
+            id
             name
             picture
           }

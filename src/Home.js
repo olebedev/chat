@@ -10,7 +10,6 @@ import {
   Image,
 } from 'react-native';
 import type { NavigationScreenProp } from 'react-navigation';
-import UUID from 'swarm-ron-uuid';
 import SwarmDB from 'swarm-db';
 import { GraphQL } from 'swarm-react';
 import type { Response } from 'swarm-react';
@@ -18,7 +17,6 @@ import type { Response } from 'swarm-react';
 import ChatList from './ChatList';
 import type { User, Chat } from './ChatList';
 import type { Profile } from './auth0';
-import * as utils from './utils';
 
 import { chatListScreen, createUser, createChat } from './graphql';
 
@@ -58,13 +56,10 @@ type Props = {
 };
 
 export default class ChatsScreen extends React.Component<Props> {
-  uid: UUID;
-
   once: boolean;
 
   constructor(props: Props, context: any) {
     super(props, context);
-    this.uid = utils.provider2uuid(props.screenProps.profile.sub);
     this.once = false;
   }
 
@@ -81,6 +76,7 @@ export default class ChatsScreen extends React.Component<Props> {
       const { createUser: cu } = r.mutations || {};
       if (cu) {
         const {
+          uuid,
           nickname,
           name,
           picture,
@@ -88,16 +84,15 @@ export default class ChatsScreen extends React.Component<Props> {
           email,
         } = this.props.screenProps.profile;
         await cu({
-          id: this.uid,
+          id: uuid,
           payload: { nickname, name, picture, updated_at, email },
         });
       }
     }
 
-    if (
-      !data.chats &&
-      'ole6edev@gmail.com' === this.props.screenProps.profile.email
-    ) {
+    const { uuid, email } = this.props.screenProps.profile;
+
+    if (!data.chats && 'ole6edev@gmail.com' === email) {
       const { createChat: cc } = r.mutations || {};
       if (cc) {
         for (const title of ['Random', 'General', 'Boom']) {
@@ -117,7 +112,7 @@ export default class ChatsScreen extends React.Component<Props> {
             message: {
               text: 'Chat created',
               system: true,
-              user: this.uid,
+              user: uuid,
             },
           });
           console.log('created?', { title, res });
@@ -127,21 +122,22 @@ export default class ChatsScreen extends React.Component<Props> {
   };
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, screenProps: { profile } } = this.props;
     return (
       <View style={styles.container}>
         <GraphQL
           query={chatListScreen}
-          args={{ user: this.uid }}
+          args={{ user: profile.uuid }}
           mutations={{ createChat, createUser }}>
           {(update: Response<chatListScreenResponse>): React.Node => {
             this.checkOnce(update).catch(error => console.error(error));
             console.log({ update });
             if (!update.data || !update.data.chats || !update.data.user) {
-              return <ActivityIndicator size="small" color="#333" />;
+              return <ActivityIndicator size="small" color="#000" />;
             }
             return (
               <ChatList
+                profile={profile}
                 chats={update.data.chats}
                 onPress={c => navigation.navigate('Chat', c)}
               />

@@ -12,6 +12,9 @@ import {
   Platform,
 } from 'react-native';
 // import UUID from 'swarm-ron-uuid';
+import moment from 'moment';
+import type { Profile } from './auth0';
+import * as utils from './utils';
 
 export type User = {
   id: string,
@@ -35,10 +38,11 @@ export type Chat = {
   version: string,
   picture: string,
   title: string,
-  messages?: Message[],
+  messages: Message[],
 };
 
 type Props = {
+  profile: Profile,
   chats: {
     id: string,
     version: string,
@@ -49,7 +53,17 @@ type Props = {
 };
 
 export default class ChatList extends React.Component<Props, *> {
-  _renderItem = ({ item, separators }) => {
+  _renderItem = (
+    item: Chat,
+    separators: { highlight: any, unhighlight: any },
+    id: string,
+  ) => {
+    const m = item.messages[0];
+    if (!(m.createdAt instanceof Date)) {
+      m.createdAt = utils.parseDate(m.createdAt);
+    }
+    // const name = m.user && m.user.id === id ? 'You' : m.user.name;
+
     return (
       <TouchableOpacity
         onPress={() => this.props.onPress(item)}
@@ -59,24 +73,43 @@ export default class ChatList extends React.Component<Props, *> {
           <Image style={styles.picture} source={{ uri: item.picture }} />
           <View style={styles.inner}>
             <View style={styles.innerTop}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
+                {item.title}
+              </Text>
+              <Text style={styles.date}>{moment(m.createdAt).fromNow()}</Text>
+              {/* last message date */}
+            </View>
+            <View>
+              <Text
+                style={styles.message}
+                numberOfLines={2}
+                ellipsizeMode="tail">
+                {/* m.text */}
+                Adding justifyContent to a component's style determines the
+                distribution of children along the primary axis
+              </Text>
             </View>
           </View>
+          <Image style={styles.arrow} source={require('./arrow.png')} />
         </View>
       </TouchableOpacity>
     );
   };
 
   render() {
-    console.log('chat list', this.props.chats);
+    const { profile: { uuid }, chats } = this.props;
+    const id = uuid.toString();
+    console.log('chat list', chats);
     return (
       <FlatList
         ItemSeparatorComponent={Platform.select({
           ios: () => <View style={[styles.separator]} />,
         })}
-        data={this.props.chats.list}
+        data={chats.list}
         keyExtractor={(item: Chat) => item.id}
-        renderItem={this._renderItem}
+        renderItem={({ item, separators }) =>
+          this._renderItem(item, separators, id)
+        }
       />
     );
   }
@@ -92,20 +125,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     width,
   },
+  arrow: {
+    width: 7,
+    height: 12,
+    resizeMode: 'contain',
+    marginTop: 3,
+    marginRight: 6,
+    tintColor: '#aaa',
+  },
   inner: {
     flex: 1,
+    justifyContent: 'flex-start',
   },
-  innerTop: {},
+  innerTop: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  date: {
+    marginTop: 2,
+    marginRight: 5,
+    color: '#aaa',
+    fontSize: 12,
+  },
   title: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
+    color: '#333',
+  },
+  message: {
+    color: '#666',
+    fontSize: 14,
+    marginBottom: 4,
   },
   picture: {
     height: 45,
     width: 45,
     borderRadius: 45 / 2,
     marginRight: 10,
-    marginLeft: 10,
+    marginLeft: 6,
     marginVertical: 5,
   },
   separator: {

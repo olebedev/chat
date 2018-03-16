@@ -1,6 +1,7 @@
 // @flow
 
 import UUID, { ERROR, BASE64 } from 'swarm-ron-uuid';
+import { calendarBase2Date } from 'swarm-clock';
 
 export const isHex = (input: string): boolean => {
   return /^[0-9a-fA-F]{1,}$/i.test(input);
@@ -26,4 +27,9 @@ export const provider2uuid = (uniq: string): UUID => {
     (base.slice(10) + '~' + provider).slice(0, 10),
     '%',
   );
+};
+
+export const parseDate = (s: string | UUID): Date => {
+  const uuid = s instanceof UUID ? s : UUID.fromString(s);
+  return calendarBase2Date(uuid.value);
 };

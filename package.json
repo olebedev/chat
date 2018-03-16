@@ -38,6 +38,7 @@
     "graphql-tag": "^2.8.0",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "moment": "^2.21.0",
     "object-assign": "4.1.1",
     "object-hash": "^1.2.0",
     "postcss-flexbugs-fixes": "3.2.0",

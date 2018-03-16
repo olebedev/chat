@@ -52,9 +52,6 @@ export default class Navigation extends React.Component<Props, *> {
   constructor(props: Props, context: any) {
     super(props, context);
     // AsyncStorage.clear();
-    AsyncStorage.getAllKeys().then(keys => {
-      console.log({ keys });
-    });
     this.swarm = new SwarmDB({
       storage: new Storage(),
       upstream: new Debug('wss://swarmdb.ngrok.io'),
