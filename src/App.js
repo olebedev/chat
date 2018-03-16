@@ -13,18 +13,34 @@ type State = {
   profile?: Profile,
   initialized?: true,
   loading: boolean,
-  error?: any
+  error?: any,
 };
 
 export default class App extends React.Component<{}, State> {
   state = { loading: false };
 
-  onLogout = async () => {
+  constructor(props: {}) {
+    super(props);
+    this.init();
+  }
+
+  async init(): Promise<void> {
+    const profile = await getUserInfo();
+    let state = { initialized: true };
+    if (profile)
+      state = {
+        ...state,
+        profile,
+      };
+    this.setState(state);
+  }
+
+  onLogout = async (): Promise<void> => {
     await logout();
     this.setState({
       error: null,
       loading: false,
-      profile: undefined
+      profile: undefined,
     });
   };
 
@@ -32,27 +48,14 @@ export default class App extends React.Component<{}, State> {
     this.setState({ loading: true });
     try {
       const profile = await authorize();
-      console.log(JSON.stringify(profile, null, 2));
       this.setState({ profile });
     } catch (error) {
       this.setState({
         error,
-        loading: false
+        loading: false,
       });
     }
   };
-
-  async componentWillMount(): Promise<void> {
-    const profile = await getUserInfo();
-    console.log({ profile });
-    let state = { initialized: true };
-    if (profile)
-      state = {
-        ...state,
-        profile
-      };
-    this.setState(state);
-  }
 
   render() {
     if (!this.state.initialized) return null;
@@ -63,12 +66,7 @@ export default class App extends React.Component<{}, State> {
           <Login loading={this.state.loading} onPressNext={this.onNext} />
         )}
         {!!this.state.profile && (
-          <Home
-            screenProps={{
-              logout: this.onLogout,
-              profile: this.state.profile
-            }}
-          />
+          <Home logout={this.onLogout} profile={this.state.profile} />
         )}
       </View>
     );
@@ -76,5 +74,5 @@ export default class App extends React.Component<{}, State> {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 }
+  container: { flex: 1 },
 });

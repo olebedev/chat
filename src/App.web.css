@@ -17,8 +17,11 @@
   margin: 0 auto !important;
 }
 
-#root {
+body {
   overflow: hidden;
+}
+
+#root {
   height: 100vh;
 }
 

@@ -20,9 +20,10 @@ export const provider2uuid = (uniq: string): UUID => {
   const [provider, id] = uniq.split('|');
   if (!isHex(id)) return ERROR;
   const base = hex2base(id);
+  if (base.length > 20) throw new Error('Unexpected length: ' + base.length);
   return new UUID(
     base.slice(0, 10),
     (base.slice(10) + '~' + provider).slice(0, 10),
-    '%'
+    '%',
   );
 };

@@ -1,29 +1,38 @@
 // @flow
 
 import * as React from 'react';
-import {Platform, StyleSheet, Text, View, Button} from 'react-native';
+import { Image, StyleSheet, Text, View, Button } from 'react-native';
 
 type Props = {
   onPressNext: () => Promise<void>,
   loading: boolean,
 };
 
-const instructions = ['Welcome to example chat', 'application based on SwarmDB.'].join('\n');
-
 export default class Login extends React.Component<Props> {
   render() {
     return (
       <View style={styles.cardItem}>
-        <Text style={styles.welcome}>The Chat</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-        <View style={styles.margin}>{this.props.loading && <Text>loading...</Text>}</View>
-        <Button title={'Next'} onPress={this.props.onPressNext} />
+        <Image source={require('./swarm.jpg')} style={styles.logo} />
+        <Text style={styles.welcome}>SwarmDB Demo</Text>
+        <Text style={styles.instructions}>Welcome.</Text>
+        <View style={styles.margin} />
+        {this.props.loading ? (
+          <Text>loading...</Text>
+        ) : (
+          <Button title={'Next'} onPress={this.props.onPressNext} />
+        )}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  logo: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginBottom: 20,
+  },
   cardItem: {
     flex: 1,
     justifyContent: 'center',
@@ -31,21 +40,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   welcome: {
+    fontWeight: '900',
     fontSize: 20,
     textAlign: 'center',
     margin: 5,
+    marginBottom: 0,
   },
   instructions: {
     textAlign: 'center',
     color: '#333333',
     margin: 5,
+    marginBottom: 20,
+    lineHeight: 21,
   },
-  margin: {
-    height: 85,
-    ...Platform.select({
-      android: {
-        height: 95,
-      },
-    }),
-  },
+  margin: {},
 });
