@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, View, Text } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import SwarmDB from 'swarm-db';
@@ -32,12 +32,14 @@ export const Stack = StackNavigator({
   },
   Chat: {
     screen: Chat,
-    navigationOptions: () => ({
-      title: 'Chat Room',
-      headerStyle: {
-        backgroundColor: 'white',
-      },
-    }),
+    navigationOptions: ({ navigation: { state: { params: { chat } } } }) => {
+      return {
+        title: chat.title,
+        headerStyle: {
+          backgroundColor: 'white',
+        },
+      };
+    },
   },
 });
 
@@ -47,18 +49,24 @@ type Props = {
 };
 
 export default class Navigation extends React.Component<Props, *> {
-  swarm: SwarmDB<*>;
+  swarm: SwarmDB;
 
   constructor(props: Props, context: any) {
     super(props, context);
     // AsyncStorage.clear();
+    AsyncStorage.getAllKeys().then(keys => {
+      AsyncStorage.multiGet(keys).then(pairs => {
+        console.log({ pairs });
+      });
+    });
     this.swarm = new SwarmDB({
       storage: new Storage(),
       upstream: new Debug('wss://swarmdb.ngrok.io'),
       db: { name: 'chat' },
+      // db: { id: 'user', name: 'chat', clockMode: 'Calendar' },
     });
     this.swarm.ensure().then(() => {
-      console.log('swarm connected');
+      console.log('swarm initialized');
     });
   }
 
@@ -68,6 +76,9 @@ export default class Navigation extends React.Component<Props, *> {
 
   render() {
     return (
+      // <View>
+      //   <Text>empty</Text>
+      // </View>
       <Provider swarm={this.swarm}>
         <Stack screenProps={{ ...this.props, swarm: this.swarm }} />
       </Provider>

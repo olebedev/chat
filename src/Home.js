@@ -21,9 +21,11 @@ import type { Profile } from './auth0';
 import { chatListScreen, createUser, createChat } from './graphql';
 
 export const Avatar = ({ profile }: { profile: Profile }) => (
-  <View style={styles.avatarSmallWrap}>
-    <Image style={styles.avatarSmall} source={{ uri: profile.picture }} />
-  </View>
+  <TouchableOpacity onPress={() => {}} style={styles.logout}>
+    <View style={styles.avatarSmallWrap}>
+      <Image style={styles.avatarSmall} source={{ uri: profile.picture }} />
+    </View>
+  </TouchableOpacity>
 );
 
 export const Logout = ({ logout }: { logout: () => void }) => (
@@ -50,7 +52,7 @@ type Props = {
   screenProps: {
     profile: Profile,
     logout: () => Promise<void>,
-    swarm: SwarmDB<chatListScreenResponse>,
+    swarm: SwarmDB,
   },
   navigation: NavigationScreenProp<{}>,
 };
@@ -92,7 +94,8 @@ export default class ChatsScreen extends React.Component<Props> {
 
     const { uuid, email } = this.props.screenProps.profile;
 
-    if (!data.chats && 'ole6edev@gmail.com' === email) {
+    // if (!data.chats && 'ole6edev@gmail.com' === email) {
+    if (!data.chats) {
       const { createChat: cc } = r.mutations || {};
       if (cc) {
         for (const title of ['Random', 'General', 'Boom']) {
@@ -123,6 +126,7 @@ export default class ChatsScreen extends React.Component<Props> {
 
   render() {
     const { navigation, screenProps: { profile } } = this.props;
+    console.log('chat screen render');
     return (
       <View style={styles.container}>
         <GraphQL
@@ -131,15 +135,17 @@ export default class ChatsScreen extends React.Component<Props> {
           mutations={{ createChat, createUser }}>
           {(update: Response<chatListScreenResponse>): React.Node => {
             this.checkOnce(update).catch(error => console.error(error));
-            console.log({ update });
+            console.log('render chats', {
+              user: update.data && update.data.user,
+            });
             if (!update.data || !update.data.chats || !update.data.user) {
-              return <ActivityIndicator size="small" color="#000" />;
+              return <ActivityIndicator size="small" color="#666" />;
             }
             return (
               <ChatList
                 profile={profile}
                 chats={update.data.chats}
-                onPress={c => navigation.navigate('Chat', c)}
+                onPress={chat => navigation.navigate('Chat', { chat, profile })}
               />
             );
           }}

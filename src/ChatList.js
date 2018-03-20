@@ -38,7 +38,11 @@ export type Chat = {
   version: string,
   picture: string,
   title: string,
-  messages: Message[],
+  messages: {
+    length: number,
+    id: string,
+    list: Message[],
+  },
 };
 
 type Props = {
@@ -58,7 +62,8 @@ export default class ChatList extends React.Component<Props, *> {
     separators: { highlight: any, unhighlight: any },
     id: string,
   ) => {
-    const m = item.messages[0];
+    console.log({ item });
+    const m = item.messages.list[0];
     if (!(m.createdAt instanceof Date)) {
       m.createdAt = utils.parseDate(m.createdAt);
     }
@@ -84,9 +89,7 @@ export default class ChatList extends React.Component<Props, *> {
                 style={styles.message}
                 numberOfLines={2}
                 ellipsizeMode="tail">
-                {/* m.text */}
-                Adding justifyContent to a component's style determines the
-                distribution of children along the primary axis
+                {m.text}
               </Text>
             </View>
           </View>
@@ -99,13 +102,12 @@ export default class ChatList extends React.Component<Props, *> {
   render() {
     const { profile: { uuid }, chats } = this.props;
     const id = uuid.toString();
-    console.log('chat list', chats);
     return (
       <FlatList
         ItemSeparatorComponent={Platform.select({
           ios: () => <View style={[styles.separator]} />,
         })}
-        data={chats.list}
+        data={chats.list.filter(i => !!i)}
         keyExtractor={(item: Chat) => item.id}
         renderItem={({ item, separators }) =>
           this._renderItem(item, separators, id)

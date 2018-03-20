@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, AsyncStorage } from 'react-native';
 
 import { authorize, logout, getUserInfo } from './auth0';
 import type { Profile } from './auth0';
@@ -37,6 +37,7 @@ export default class App extends React.Component<{}, State> {
 
   onLogout = async (): Promise<void> => {
     await logout();
+    await AsyncStorage.clear();
     this.setState({
       error: null,
       loading: false,
