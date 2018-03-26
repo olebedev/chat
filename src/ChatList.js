@@ -14,7 +14,6 @@ import {
 // import UUID from 'swarm-ron-uuid';
 import moment from 'moment';
 import type { Profile } from './auth0';
-import * as utils from './utils';
 
 export type User = {
   id: string,
@@ -63,11 +62,9 @@ export default class ChatList extends React.Component<Props, *> {
     id: string,
   ) => {
     console.log({ item });
-    const m = item.messages.list[0];
-    if (!(m.createdAt instanceof Date)) {
-      m.createdAt = utils.parseDate(m.createdAt);
-    }
-    // const name = m.user && m.user.id === id ? 'You' : m.user.name;
+    const m = item.messages ? item.messages.list.pop() : null;
+
+    if (item.version === '0') return null;
 
     return (
       <TouchableOpacity
@@ -81,16 +78,20 @@ export default class ChatList extends React.Component<Props, *> {
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
                 {item.title}
               </Text>
-              <Text style={styles.date}>{moment(m.createdAt).fromNow()}</Text>
+              {!!m && (
+                <Text style={styles.date}>{moment(m.createdAt).fromNow()}</Text>
+              )}
               {/* last message date */}
             </View>
-            <View>
-              <Text
-                style={styles.message}
-                numberOfLines={2}
-                ellipsizeMode="tail">
-                {m.text}
-              </Text>
+            <View style={{ height: 34 }}>
+              {!!m && (
+                <Text
+                  style={styles.message}
+                  numberOfLines={2}
+                  ellipsizeMode="tail">
+                  {m.text}
+                </Text>
+              )}
             </View>
           </View>
           <Image style={styles.arrow} source={require('./arrow.png')} />
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
   },
   innerTop: {
     flex: 1,
@@ -154,6 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
+    height: 16,
   },
   message: {
     color: '#666',

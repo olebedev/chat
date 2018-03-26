@@ -21,15 +21,26 @@ import type { Profile } from './auth0';
 import { chatListScreen, createUser, createChat } from './graphql';
 
 export const Avatar = ({ profile }: { profile: Profile }) => (
-  <TouchableOpacity onPress={() => {}} style={styles.logout}>
+  <TouchableOpacity style={styles.logout}>
     <View style={styles.avatarSmallWrap}>
       <Image style={styles.avatarSmall} source={{ uri: profile.picture }} />
     </View>
   </TouchableOpacity>
 );
 
-export const Logout = ({ logout }: { logout: () => void }) => (
-  <TouchableOpacity onPress={logout} style={styles.logout}>
+export const Logout = ({
+  logout,
+  clear,
+}: {
+  logout: () => void,
+  clear: () => Promise<void>,
+}) => (
+  <TouchableOpacity
+    onPress={() => logout}
+    onLongPress={() => {
+      clear().then(logout);
+    }}
+    style={styles.logout}>
     <Image
       style={styles.logoutImage}
       resizeMode="contain"
@@ -38,15 +49,15 @@ export const Logout = ({ logout }: { logout: () => void }) => (
   </TouchableOpacity>
 );
 
-type chatListScreenResponse = ?{
-  chats: ?{
+type chatListScreenResponse = {
+  chats: {
     id: string,
     version: string,
     length: number,
     list: Chat[],
   },
-  user: ?User,
-};
+  user: User,
+} | null;
 
 type Props = {
   screenProps: {
@@ -74,7 +85,9 @@ export default class ChatsScreen extends React.Component<Props> {
 
     this.once = true;
 
-    if (!data.user) {
+    console.log('once', data);
+
+    if (data.user.version === '0') {
       const { createUser: cu } = r.mutations || {};
       if (cu) {
         const {
@@ -94,8 +107,7 @@ export default class ChatsScreen extends React.Component<Props> {
 
     const { uuid, email } = this.props.screenProps.profile;
 
-    // if (!data.chats && 'ole6edev@gmail.com' === email) {
-    if (!data.chats) {
+    if (data.chats.version === '0') {
       const { createChat: cc } = r.mutations || {};
       if (cc) {
         for (const title of ['Random', 'General', 'Boom']) {
@@ -135,9 +147,7 @@ export default class ChatsScreen extends React.Component<Props> {
           mutations={{ createChat, createUser }}>
           {(update: Response<chatListScreenResponse>): React.Node => {
             this.checkOnce(update).catch(error => console.error(error));
-            console.log('render chats', {
-              user: update.data && update.data.user,
-            });
+            // console.log('render chats', JSON.stringify(update.data, null, 2));
             if (!update.data || !update.data.chats || !update.data.user) {
               return <ActivityIndicator size="small" color="#666" />;
             }

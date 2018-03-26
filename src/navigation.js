@@ -16,7 +16,7 @@ import Chat from './Chat';
 export const Stack = StackNavigator({
   Home: {
     screen: Home,
-    navigationOptions: ({ screenProps: { logout, profile } }) => {
+    navigationOptions: ({ screenProps: { clear, logout, profile } }) => {
       return {
         title: 'Chats',
         headerTitleStyle: {
@@ -26,7 +26,7 @@ export const Stack = StackNavigator({
           backgroundColor: 'white',
         },
         headerLeft: <Avatar profile={profile} />,
-        headerRight: <Logout logout={logout} />,
+        headerRight: <Logout logout={logout} clear={clear} />,
       };
     },
   },
@@ -62,6 +62,7 @@ export default class Navigation extends React.Component<Props, *> {
     this.swarm = new SwarmDB({
       storage: new Storage(),
       upstream: new Debug('wss://swarmdb.ngrok.io'),
+      // upstream: new Debug('ws://localhost:31415'),
       db: { name: 'chat' },
       // db: { id: 'user', name: 'chat', clockMode: 'Calendar' },
     });
@@ -71,7 +72,7 @@ export default class Navigation extends React.Component<Props, *> {
   }
 
   componentWillUnmount() {
-    // TODO shutdown swarm instance
+    if (this.swarm) this.swarm.close();
   }
 
   render() {

@@ -35,9 +35,12 @@ export default class App extends React.Component<{}, State> {
     this.setState(state);
   }
 
+  onClear = async (): Promise<void> => {
+    await AsyncStorage.clear();
+  };
+
   onLogout = async (): Promise<void> => {
     await logout();
-    await AsyncStorage.clear();
     this.setState({
       error: null,
       loading: false,
@@ -59,6 +62,7 @@ export default class App extends React.Component<{}, State> {
   };
 
   render() {
+    // AsyncStorage.clear();
     if (!this.state.initialized) return null;
 
     return (
@@ -67,7 +71,11 @@ export default class App extends React.Component<{}, State> {
           <Login loading={this.state.loading} onPressNext={this.onNext} />
         )}
         {!!this.state.profile && (
-          <Home logout={this.onLogout} profile={this.state.profile} />
+          <Home
+            logout={this.onLogout}
+            clear={this.onClear}
+            profile={this.state.profile}
+          />
         )}
       </View>
     );
