@@ -83,7 +83,7 @@ export default class ChatList extends React.Component<Props, *> {
               )}
               {/* last message date */}
             </View>
-            <View style={{ height: 34 }}>
+            <View style={styles.innerBottom}>
               {!!m && (
                 <Text
                   style={styles.message}
@@ -145,6 +145,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  innerBottom: {
+    ...Platform.select({
+      ios: {
+        height: 34,
+      },
+      android: {
+        height: 36,
+      },
+    }),
+  },
   date: {
     marginTop: 2,
     marginRight: 5,
@@ -155,7 +165,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    height: 16,
+    height: Platform.select({
+      ios: 16,
+      android: 20,
+    }),
   },
   message: {
     color: '#666',
