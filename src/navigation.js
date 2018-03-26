@@ -64,7 +64,7 @@ export default class Navigation extends React.Component<Props, *> {
       upstream: new Debug('wss://swarmdb.ngrok.io'),
       // upstream: new Debug('ws://localhost:31415'),
       db: { name: 'chat' },
-      // db: { id: 'user', name: 'chat', clockMode: 'Calendar' },
+      resendAfter: 1000,
     });
     this.swarm.ensure().then(() => {
       console.log('swarm initialized');
