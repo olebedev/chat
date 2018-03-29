@@ -2,12 +2,14 @@
   "name": "SwarmChat",
   "version": "0.0.1",
   "private": true,
+  "homepage": "http://olebedev.github.io/chat",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "postinstall": "./cp.sh",
     "test": "jest",
     "start:web": "node web/scripts/start.js",
-    "build:web": "node web/scripts/build.js"
+    "build:web": "node web/scripts/build.js",
+    "deploy:web": "gh-pages -d web/build"
   },
   "dependencies": {
     "auth0-lock": "^11.3.1",
@@ -35,6 +37,7 @@
     "extract-text-webpack-plugin": "3.0.2",
     "file-loader": "1.1.5",
     "fs-extra": "3.0.1",
+    "gh-pages": "^1.1.0",
     "graphql": "^0.13.1",
     "graphql-anywhere": "^4.1.6",
     "graphql-tag": "^2.8.0",

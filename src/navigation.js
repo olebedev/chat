@@ -53,7 +53,6 @@ export default class Navigation extends React.Component<Props, *> {
 
   constructor(props: Props, context: any) {
     super(props, context);
-    // AsyncStorage.clear();
     AsyncStorage.getAllKeys().then(keys => {
       AsyncStorage.multiGet(keys).then(pairs => {
         console.log({ pairs });
@@ -61,10 +60,14 @@ export default class Navigation extends React.Component<Props, *> {
     });
     this.swarm = new SwarmDB({
       storage: new Storage(),
-      upstream: new Debug('wss://swarmdb.ngrok.io'),
-      // upstream: new Debug('ws://localhost:31415'),
-      db: { name: 'chat' },
-      resendAfter: 1000,
+      upstream: __DEV__ // eslint-disable-line
+        ? new Debug('wss://swarmdb.ngrok.io')
+        : 'wss://swarm.toscale.co',
+      db: {
+        name: __DEV__ // eslint-disable-line
+          ? 'chat'
+          : 'default',
+      },
     });
     this.swarm.ensure().then(() => {
       console.log('swarm initialized');
@@ -74,14 +77,16 @@ export default class Navigation extends React.Component<Props, *> {
   }
 
   componentWillUnmount() {
-    if (this.swarm) this.swarm.close();
+    if (this.swarm) {
+      this.swarm.close();
+      if (typeof window !== 'undefined') {
+        delete window.swarm;
+      }
+    }
   }
 
   render() {
     return (
-      // <View>
-      //   <Text>empty</Text>
-      // </View>
       <Provider swarm={this.swarm}>
         <Stack screenProps={{ ...this.props, swarm: this.swarm }} />
       </Provider>

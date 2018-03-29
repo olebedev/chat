@@ -54,3 +54,4 @@ buck-out/
 
 web/build
 .vscode
+./cp.sh
