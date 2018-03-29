@@ -64,5 +64,6 @@ module.exports = {
     'react-native-tab-view',
     'react-native-safe-area-view',
     'react-native-web-lists',
+    'react-native-communications',
   ].map(i => resolveApp(`node_modules/${i}`)),
 };

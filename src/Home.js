@@ -36,7 +36,7 @@ export const Logout = ({
   clear: () => Promise<void>,
 }) => (
   <TouchableOpacity
-    onPress={() => logout}
+    onPress={logout}
     onLongPress={() => {
       clear().then(logout);
     }}

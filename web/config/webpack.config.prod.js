@@ -56,7 +56,11 @@ module.exports = {
   // You can exclude the *.map files from the build during deployment.
   devtool: shouldUseSourceMap ? 'source-map' : false,
   // In production, we only want to load the polyfills and the app code.
-  entry: ['regenerator-runtime/runtime',require.resolve('./polyfills'), paths.appIndexJs],
+  entry: [
+    'regenerator-runtime/runtime',
+    require.resolve('./polyfills'),
+    paths.appIndexJs,
+  ],
   output: {
     // The build folder.
     path: paths.appBuild,
@@ -80,7 +84,7 @@ module.exports = {
     // https://github.com/facebookincubator/create-react-app/issues/253
     modules: ['node_modules', paths.appNodeModules].concat(
       // It is guaranteed to exist because we tweak it in `env.js`
-      process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
+      process.env.NODE_PATH.split(path.delimiter).filter(Boolean),
     ),
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
@@ -90,7 +94,6 @@ module.exports = {
     // for React Native Web.
     extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       './ActionSheet': './ActionSheet.android',
@@ -122,7 +125,6 @@ module.exports = {
             options: {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint'),
-              
             },
             loader: require.resolve('eslint-loader'),
           },
@@ -148,8 +150,9 @@ module.exports = {
           {
             test: /\.(js|jsx|mjs)$/,
             include: [
+              paths.appIndexJs,
               paths.appSrc,
-              paths.nonTranspiledModules
+              paths.nonTranspiledModules,
             ],
             loader: require.resolve('babel-loader'),
             options: {
@@ -210,8 +213,8 @@ module.exports = {
                     },
                   ],
                 },
-                extractTextPluginOptions
-              )
+                extractTextPluginOptions,
+              ),
             ),
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },

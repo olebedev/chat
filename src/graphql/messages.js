@@ -9,14 +9,14 @@ export default gql`
       mid: messages
       messages {
         length
-        list: id @node @slice(begin: $from, end: $to) @ensure {
+        list: id @node @slice(begin: $from, end: $to) @static {
           _id: id
           createdAt: id @date
           text
           sent
           received
           system
-          user @ensure {
+          user {
             _id: id
             name
             avatar: picture
