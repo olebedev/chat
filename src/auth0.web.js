@@ -2,10 +2,13 @@
 
 import decode from 'jwt-decode';
 import Auth0Lock from 'auth0-lock';
+import UUID from 'swarm-ron-uuid';
+import * as utils from './utils';
 
 const KEY = '!profile';
 
 export type Profile = {
+  uuid: UUID,
   nickname: string,
   name: string,
   picture: string,
@@ -20,13 +23,17 @@ export type Profile = {
   nonce: string,
   credentials: {
     idToken: string,
-    state: string
-  }
+    state: string,
+  },
 };
 
 export const getUserInfo = async (): Promise<Profile | void> => {
   const p = localStorage.getItem(KEY);
-  return p ? JSON.parse(p) : undefined;
+  if (p) {
+    const parsed = JSON.parse(p);
+    parsed.uuid = utils.provider2uuid(parsed.sub);
+    return parsed;
+  }
 };
 
 export const logout = async (): Promise<void> => {
@@ -41,17 +48,17 @@ export const authorize = async (): Promise<Profile> => {
       autoclose: true,
       theme: {
         logo: 'https://i.imgur.com/9wmB3yv.jpg',
-        primaryColor: '#333'
+        primaryColor: '#333',
       },
       auth: {
         audience: 'https://olebedev.eu.auth0.com/userinfo',
         redirect: false,
         responseType: 'id_token',
         params: {
-          scope: 'openid profile email picture' // Learn about scopes: https://auth0.com/docs/scopes
-        }
-      }
-    }
+          scope: 'openid profile email picture', // Learn about scopes: https://auth0.com/docs/scopes
+        },
+      },
+    },
   );
 
   // Listening for the authenticated event
@@ -60,9 +67,10 @@ export const authorize = async (): Promise<Profile> => {
 
   const p = {
     credentials,
-    ...decode(credentials.idToken)
+    ...decode(credentials.idToken),
   };
 
   localStorage.setItem(KEY, JSON.stringify(p));
+  p.uuid = utils.provider2uuid(p.sub);
   return p;
 };

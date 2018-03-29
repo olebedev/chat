@@ -105,7 +105,7 @@ export default class ChatsScreen extends React.Component<Props> {
       }
     }
 
-    const { uuid, email } = this.props.screenProps.profile;
+    const { uuid } = this.props.screenProps.profile;
 
     if (data.chats.version === '0') {
       const { createChat: cc } = r.mutations || {};
@@ -138,7 +138,7 @@ export default class ChatsScreen extends React.Component<Props> {
 
   render() {
     const { navigation, screenProps: { profile } } = this.props;
-    console.log('chat screen render');
+    console.log('chat screen render for', { profile });
     return (
       <View style={styles.container}>
         <GraphQL

@@ -6835,6 +6835,10 @@ react-native-tab-view@^0.0.74:
   dependencies:
     prop-types "^15.6.0"
 
+react-native-web-lists@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-web-lists/-/react-native-web-lists-0.1.1.tgz#2d46e67e4bfacdb16151a5cad0dc792b1dd7652f"
+
 react-native-web@^0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.5.2.tgz#54686138e3da5e188de5e51943fb446e84807e08"

@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { AsyncStorage, View, Text } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import SwarmDB from 'swarm-db';
@@ -69,6 +69,8 @@ export default class Navigation extends React.Component<Props, *> {
     this.swarm.ensure().then(() => {
       console.log('swarm initialized');
     });
+
+    if (typeof window !== 'undefined') window.swarm = this.swarm;
   }
 
   componentWillUnmount() {

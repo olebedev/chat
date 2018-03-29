@@ -4,13 +4,14 @@ import * as React from 'react';
 import {
   Dimensions,
   StyleSheet,
-  FlatList,
+  // FlatList,
   TouchableOpacity,
   Text,
   Image,
   View,
   Platform,
 } from 'react-native';
+import { FlatList } from './imports';
 // import UUID from 'swarm-ron-uuid';
 import moment from 'moment';
 import type { Profile } from './auth0';
@@ -66,11 +67,18 @@ export default class ChatList extends React.Component<Props, *> {
 
     if (item.version === '0') return null;
 
+    // workaround web
+    const propsToAdd = separators
+      ? {
+          onShowUnderlay: separators.highlight,
+          onHideUnderlay: separators.unhighlight,
+        }
+      : {};
+
     return (
       <TouchableOpacity
-        onPress={() => this.props.onPress(item)}
-        onShowUnderlay={separators.highlight}
-        onHideUnderlay={separators.unhighlight}>
+        {...propsToAdd}
+        onPress={() => this.props.onPress(item)}>
         <View style={styles.cell}>
           <Image style={styles.picture} source={{ uri: item.picture }} />
           <View style={styles.inner}>

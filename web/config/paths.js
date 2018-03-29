@@ -63,5 +63,6 @@ module.exports = {
     'react-navigation',
     'react-native-tab-view',
     'react-native-safe-area-view',
+    'react-native-web-lists',
   ].map(i => resolveApp(`node_modules/${i}`)),
 };
