@@ -5,6 +5,7 @@ import { AsyncStorage } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import SwarmDB from 'swarm-db';
+import { UUID } from 'swarm-ron';
 import { Provider } from 'swarm-react';
 import Debug from './debugConn';
 
@@ -12,6 +13,7 @@ import Storage from './storage';
 import type { Profile } from './auth0';
 import Home, { Avatar, Logout } from './Home';
 import Chat from './Chat';
+import { provider2uuid } from './utils';
 
 export const Stack = StackNavigator({
   Home: {
@@ -53,16 +55,11 @@ export default class Navigation extends React.Component<Props, *> {
 
   constructor(props: Props, context: any) {
     super(props, context);
-    AsyncStorage.getAllKeys().then(keys => {
-      AsyncStorage.multiGet(keys).then(pairs => {
-        console.log({ pairs });
-      });
-    });
     this.swarm = new SwarmDB({
       storage: new Storage(),
       upstream: __DEV__ // eslint-disable-line
         ? new Debug('wss://swarmdb.ngrok.io')
-        : 'wss://swarm.toscale.co',
+        : new Debug('wss://swarm.toscale.co'),
       db: {
         name: __DEV__ // eslint-disable-line
           ? 'chat'
@@ -70,10 +67,22 @@ export default class Navigation extends React.Component<Props, *> {
       },
     });
     this.swarm.ensure().then(() => {
+      // eslint-disable-next-line
       console.log('swarm initialized');
     });
 
-    if (typeof window !== 'undefined') window.swarm = this.swarm;
+    AsyncStorage.getAllKeys().then(keys => {
+      AsyncStorage.multiGet(keys).then(pairs => {
+        console.log({ pairs });
+      });
+    });
+
+    // eslint-disable-next-line
+    if (typeof window !== 'undefined') {
+      window.swarm = this.swarm;
+      window.UUID = UUID;
+      window.id2uuid = provider2uuid;
+    }
   }
 
   componentWillUnmount() {
@@ -81,6 +90,7 @@ export default class Navigation extends React.Component<Props, *> {
       this.swarm.close();
       if (typeof window !== 'undefined') {
         delete window.swarm;
+        delete window.UUID;
       }
     }
   }

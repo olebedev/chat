@@ -7,7 +7,7 @@ import './src/App.web.css';
 AppRegistry.registerComponent('SwarmChat', () => App);
 
 AppRegistry.runApplication('SwarmChat', {
-  rootTag: document.getElementById('root')
+  rootTag: document.getElementById('root'),
 });
 
 if (module.hot) {
@@ -16,7 +16,7 @@ if (module.hot) {
     const NextApp = require('./src/App').default;
     AppRegistry.registerComponent('SwarmChat', () => NextApp);
     AppRegistry.runApplication('SwarmChat', {
-      rootTag: document.getElementById('root')
+      rootTag: document.getElementById('root'),
     });
   });
 }

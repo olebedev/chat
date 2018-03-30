@@ -85,7 +85,8 @@ export default class ChatsScreen extends React.Component<Props> {
 
     this.once = true;
 
-    console.log('once', data);
+    // eslint-disable-next-line
+    __DEV__ && console.log('once', data);
 
     if (data.user.version === '0') {
       const { createUser: cu } = r.mutations || {};
@@ -130,7 +131,8 @@ export default class ChatsScreen extends React.Component<Props> {
               user: uuid,
             },
           });
-          console.log('created?', { title, res });
+          // eslint-disable-next-line
+          __DEV__ && console.log('created?', { title, res });
         }
       }
     }
@@ -138,16 +140,17 @@ export default class ChatsScreen extends React.Component<Props> {
 
   render() {
     const { navigation, screenProps: { profile } } = this.props;
-    console.log('chat screen render for', { profile });
+    const dev = __DEV__ || profile.uuid.toString() === 'X8Kq%~github'; // eslint-disable-line
+    dev && console.log('chat screen render for', { profile });
     return (
       <View style={styles.container}>
         <GraphQL
           query={chatListScreen}
-          args={{ user: profile.uuid }}
+          args={{ user: profile.uuid, dev }}
           mutations={{ createChat, createUser }}>
           {(update: Response<chatListScreenResponse>): React.Node => {
             this.checkOnce(update).catch(error => console.error(error));
-            // console.log('render chats', JSON.stringify(update.data, null, 2));
+            dev && console.log('chats', update.data);
             if (!update.data || !update.data.chats || !update.data.user) {
               return <ActivityIndicator size="small" color="#666" />;
             }

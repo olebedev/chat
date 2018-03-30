@@ -62,7 +62,6 @@ export default class ChatList extends React.Component<Props, *> {
     separators: { highlight: any, unhighlight: any },
     id: string,
   ) => {
-    console.log({ item });
     const m = item.messages ? item.messages.list.pop() : null;
 
     if (item.version === '0') return null;

@@ -65,6 +65,7 @@ class GiftedChat extends React.Component {
     this.onKeyboardWillHide = this.onKeyboardWillHide.bind(this);
     this.onKeyboardDidShow = this.onKeyboardDidShow.bind(this);
     this.onKeyboardDidHide = this.onKeyboardDidHide.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
     this.onSend = this.onSend.bind(this);
     this.getLocale = this.getLocale.bind(this);
     this.onInputSizeChanged = this.onInputSizeChanged.bind(this);
@@ -84,6 +85,10 @@ class GiftedChat extends React.Component {
           }
         : {}),
     };
+
+    if (Platform.OS === 'web') {
+      window.document.body.addEventListener('keydown', this.onKeyPress);
+    }
   }
 
   static append(currentMessages = [], messages, inverted = true) {
@@ -120,6 +125,9 @@ class GiftedChat extends React.Component {
   }
 
   componentWillUnmount() {
+    if (Platform.OS === 'web') {
+      window.document.body.removeEventListener('keydown', this.onKeyPress);
+    }
     this.setIsMounted(false);
   }
 
@@ -345,6 +353,18 @@ class GiftedChat extends React.Component {
         {this.renderChatFooter()}
       </AnimatedView>
     );
+  }
+
+  onKeyPress(e) {
+    if (e.keyCode === 13) {
+      console.log('on enter press');
+      e.preventDefault();
+      setTimeout(() => {
+        const text = this.state.text.trim();
+        if (!text) return;
+        this.onSend({ text }, true);
+      }, 0);
+    }
   }
 
   onSend(messages = [], shouldResetInputToolbar = false) {

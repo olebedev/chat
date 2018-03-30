@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { View, ActivityIndicator } from 'react-native';
+import { UUID } from 'swarm-ron';
 import { GraphQL } from 'swarm-react';
 import type { Response } from 'swarm-react';
 
@@ -9,7 +10,7 @@ import { GiftedChat, Message } from './Chat/GiftedChat';
 import type { NavigationScreenProp } from 'react-navigation';
 import type { Chat } from './ChatList';
 import type { Profile } from './auth0';
-import { messages, createMessage } from './graphql';
+import { messages, createMessage, deleteMessage } from './graphql';
 
 type Props = {
   navigation: NavigationScreenProp<{
@@ -45,32 +46,32 @@ type messagesResponse = {
 export default class extends React.Component<Props> {
   render() {
     const { chat, profile } = this.props.navigation.state.params;
+    // eslint-disable-next-line
     const _id = profile.uuid.toString();
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <GraphQL
           query={messages}
           args={{ chat: chat.id }}
-          mutations={{ createMessage }}>
+          mutations={{ createMessage, deleteMessage }}>
           {(update: Response<messagesResponse>) => {
-            console.log('chat', { update });
+            console.log('render chat', update.data);
             return (
               <GiftedChat
                 renderLoading={() => (
                   <ActivityIndicator size="small" color="#666" />
                 )}
                 messages={
-                  update.data ? update.data.chat.messages.list.map(addUser) : []
+                  update.data &&
+                  update.data.chat.messages.list.filter(m => m.text)
                 }
                 onSend={async messages => {
                   const { createMessage: cm } = update.mutations || {};
                   if (!cm) {
-                    console.log('mutation not found');
                     return;
                   }
                   for (const m of messages) {
-                    console.log('creating message...', { m, cm });
-                    const resp = await cm({
+                    await cm({
                       id: update.uuid(),
                       chat: chat.messages.id,
                       payload: {
@@ -80,7 +81,6 @@ export default class extends React.Component<Props> {
                     }).catch(err => {
                       console.log({ err });
                     });
-                    console.log('push message', { resp });
                   }
                 }}
                 user={{ _id }}
@@ -98,7 +98,7 @@ function addUser(message: Message): Message {
     message.user = {
       _id: '~',
       name: 'Phantom',
-      avatar: 'https://avatars3.githubusercontent.com/u/848535?s=40&v=4',
+      avatar: 'https://i1.wp.com/cdn.auth0.com/avatars/p.png?ssl=1',
     };
   }
   return message;

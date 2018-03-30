@@ -8,7 +8,7 @@
     "postinstall": "./cp.sh",
     "test": "jest",
     "start:web": "node web/scripts/start.js",
-    "build:web": "node web/scripts/build.js",
+    "build:web": "node web/scripts/build.js && mv ./web/build/index.html ./web/build/app.html && mv ./web/build/iframe.html ./web/build/index.html",
     "deploy:web": "gh-pages -d web/build"
   },
   "dependencies": {
