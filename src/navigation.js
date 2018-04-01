@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, AppState, Platform } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
 import SwarmDB from 'swarm-db';
@@ -77,23 +77,25 @@ export default class Navigation extends React.Component<Props, *> {
       });
     });
 
-    // eslint-disable-next-line
-    if (typeof window !== 'undefined') {
+    if (Platform.OS === 'web') {
       window.swarm = this.swarm;
       window.UUID = UUID;
       window.id2uuid = provider2uuid;
+    } else {
+      AppState.addEventListener('change', this._handleAppStateChange);
     }
   }
 
   componentWillUnmount() {
-    if (this.swarm) {
-      this.swarm.close();
-      if (typeof window !== 'undefined') {
-        delete window.swarm;
-        delete window.UUID;
-      }
-    }
+    if (this.swarm) this.swarm.close();
   }
+
+  _handleAppStateChange = (state: string): void => {
+    if (state === 'active' && this.swarm) {
+      this.swarm.close();
+      this.swarm.open();
+    }
+  };
 
   render() {
     return (

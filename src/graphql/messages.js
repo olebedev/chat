@@ -16,7 +16,7 @@ export default gql`
           sent
           received
           system
-          user {
+          user @static {
             _id: id
             name
             avatar: picture

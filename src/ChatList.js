@@ -16,6 +16,8 @@ import { FlatList } from './imports';
 import moment from 'moment';
 import type { Profile } from './auth0';
 
+import Interval from './Interval';
+
 export type User = {
   id: string,
   version: string,
@@ -62,7 +64,8 @@ export default class ChatList extends React.Component<Props, *> {
     separators: { highlight: any, unhighlight: any },
     id: string,
   ) => {
-    const m = item.messages ? item.messages.list.pop() : null;
+    const m =
+      item.messages && item.messages.length ? item.messages.list[0] : null;
 
     if (item.version === '0') return null;
 
@@ -86,9 +89,12 @@ export default class ChatList extends React.Component<Props, *> {
                 {item.title}
               </Text>
               {!!m && (
-                <Text style={styles.date}>{moment(m.createdAt).fromNow()}</Text>
+                <Text style={styles.date}>
+                  <Interval interval={3e4}>
+                    {() => moment(m.createdAt).fromNow()}
+                  </Interval>
+                </Text>
               )}
-              {/* last message date */}
             </View>
             <View style={styles.innerBottom}>
               {!!m && (

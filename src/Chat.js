@@ -2,11 +2,10 @@
 
 import * as React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import { UUID } from 'swarm-ron';
 import { GraphQL } from 'swarm-react';
 import type { Response } from 'swarm-react';
 
-import { GiftedChat, Message } from './Chat/GiftedChat';
+import { GiftedChat } from './Chat/GiftedChat';
 import type { NavigationScreenProp } from 'react-navigation';
 import type { Chat } from './ChatList';
 import type { Profile } from './auth0';
@@ -55,16 +54,18 @@ export default class extends React.Component<Props> {
           args={{ chat: chat.id }}
           mutations={{ createMessage, deleteMessage }}>
           {(update: Response<messagesResponse>) => {
-            console.log('render chat', update.data);
+            const messages = (
+              (update.data && update.data.chat.messages.list) ||
+              chat.messages.list ||
+              []
+            ).filter(m => m && m.text);
+            console.log('render chat', update.data, { messages, chat });
             return (
               <GiftedChat
                 renderLoading={() => (
                   <ActivityIndicator size="small" color="#666" />
                 )}
-                messages={
-                  update.data &&
-                  update.data.chat.messages.list.filter(m => m.text)
-                }
+                messages={messages}
                 onSend={async messages => {
                   const { createMessage: cm } = update.mutations || {};
                   if (!cm) {
@@ -91,15 +92,4 @@ export default class extends React.Component<Props> {
       </View>
     );
   }
-}
-
-function addUser(message: Message): Message {
-  if (!message.user) {
-    message.user = {
-      _id: '~',
-      name: 'Phantom',
-      avatar: 'https://i1.wp.com/cdn.auth0.com/avatars/p.png?ssl=1',
-    };
-  }
-  return message;
 }

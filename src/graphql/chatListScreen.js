@@ -18,7 +18,7 @@ export default gql`
         version
         title
         picture
-        messages @ensure {
+        messages {
           id
           length
           version
@@ -26,10 +26,10 @@ export default gql`
             id
             createdAt: id @date
             text
-            user {
-              id
+            user @static {
+              _id: id
               name
-              picture
+              avatar: picture
             }
           }
         }
@@ -51,6 +51,7 @@ export default gql`
         username: nickname
         name
         picture
+        email
       }
     }
   }
