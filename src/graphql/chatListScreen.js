@@ -23,7 +23,7 @@ export default gql`
           length
           version
           list: id @node @slice(begin: 0, end: 1) @static {
-            id
+            _id: id
             createdAt: id @date
             text
             user @static {

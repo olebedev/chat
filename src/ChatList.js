@@ -28,7 +28,7 @@ export type User = {
 };
 
 export type Message = {
-  id: string,
+  _id: string,
   createdAt: string | Date,
   text: string,
   user: User,

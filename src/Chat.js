@@ -1,7 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Clipboard, Platform } from 'react-native';
+import { UUID } from 'swarm-ron';
 import { GraphQL } from 'swarm-react';
 import type { Response } from 'swarm-react';
 
@@ -66,6 +67,41 @@ export default class extends React.Component<Props> {
                   <ActivityIndicator size="small" color="#666" />
                 )}
                 messages={messages}
+                onLongPress={
+                  Platform.OS === 'web'
+                    ? undefined
+                    : (ctx, message) => {
+                        const options = ['Cancel'];
+                        if (_id === message.user._id || !message.text)
+                          options.unshift('Delete');
+                        if (message.text) options.unshift('Copy');
+
+                        ctx.actionSheet().showActionSheetWithOptions(
+                          {
+                            options,
+                            cancelButtonIndex: options.indexOf('Cancel'),
+                          },
+                          (buttonIndex: number): void => {
+                            switch (buttonIndex) {
+                              case options.indexOf('Copy'):
+                                Clipboard.setString(message.text);
+                                return;
+                              case options.indexOf('Delete'):
+                                const { deleteMessage: dm } =
+                                  update.mutations || {};
+                                dm &&
+                                  dm({
+                                    id: UUID.fromString(message._id),
+                                    chat: chat.messages.id,
+                                  });
+                                return;
+                              default:
+                                return;
+                            }
+                          },
+                        );
+                      }
+                }
                 onSend={async messages => {
                   const { createMessage: cm } = update.mutations || {};
                   if (!cm) {
