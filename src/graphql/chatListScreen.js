@@ -3,12 +3,7 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  subscription chatListScreen(
-    $from: Int = 0
-    $to: Int
-    $user: UUID!
-    $dev: Bool!
-  ) {
+  subscription chatListScreen($from: Int = 0, $to: Int, $user: UUID!) {
     chats @node(id: "chats") {
       id
       version
@@ -41,18 +36,6 @@ export default gql`
       username: nickname
       name
       picture
-    }
-    users @node(id: "users") @include(if: $dev) {
-      version
-      length
-      list: id @node @slice(begin: 0) @static {
-        id
-        version
-        username: nickname
-        name
-        picture
-        email
-      }
     }
   }
 `;

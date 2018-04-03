@@ -1,13 +1,14 @@
 // @flow
 
 import * as React from 'react';
-import { StyleSheet, View, AsyncStorage } from 'react-native';
+import { View, AsyncStorage } from 'react-native';
 
 import { authorize, logout, getUserInfo } from './auth0';
 import type { Profile } from './auth0';
 
-import Login from './Login';
-import Home from './navigation';
+import Login from './containers/Login';
+import Swarm from './containers/Swarm';
+import Stack from './navigation';
 
 type State = {
   profile?: Profile,
@@ -35,8 +36,8 @@ export default class App extends React.Component<{}, State> {
     this.setState(state);
   }
 
-  onClear = async (): Promise<void> => {
-    await AsyncStorage.clear();
+  onClear = (): Promise<void> => {
+    return AsyncStorage.clear();
   };
 
   onLogout = async (): Promise<void> => {
@@ -62,26 +63,23 @@ export default class App extends React.Component<{}, State> {
   };
 
   render() {
-    // AsyncStorage.clear();
     if (!this.state.initialized) return null;
-
     return (
-      <View style={styles.container}>
-        {!this.state.profile && (
+      <View style={{ flex: 1 }}>
+        {!this.state.profile ? (
           <Login loading={this.state.loading} onPressNext={this.onNext} />
-        )}
-        {!!this.state.profile && (
-          <Home
-            logout={this.onLogout}
-            clear={this.onClear}
-            profile={this.state.profile}
-          />
+        ) : (
+          <Swarm>
+            <Stack
+              screenProps={{
+                logout: this.onLogout,
+                clear: this.onClear,
+                profile: this.state.profile,
+              }}
+            />
+          </Swarm>
         )}
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-});

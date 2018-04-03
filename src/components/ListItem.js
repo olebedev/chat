@@ -2,74 +2,36 @@
 
 import * as React from 'react';
 import {
+  Platform,
   Dimensions,
   StyleSheet,
-  // FlatList,
   TouchableOpacity,
   Text,
   Image,
   View,
-  Platform,
 } from 'react-native';
-import { FlatList } from './imports';
-// import UUID from 'swarm-ron-uuid';
 import moment from 'moment';
-import type { Profile } from './auth0';
+
+import type { Chat } from '../graphql';
 
 import Interval from './Interval';
 
-export type User = {
-  id: string,
-  version: string,
-  username: string,
-  name: string,
-  picture: string,
-  email: string,
-};
-
-export type Message = {
-  _id: string,
-  createdAt: string | Date,
-  text: string,
-  user: User,
-  system: boolean,
-};
-
-export type Chat = {
-  id: string,
-  version: string,
-  picture: string,
-  title: string,
-  messages: {
-    length: number,
-    id: string,
-    list: Message[],
-  },
-};
-
 type Props = {
-  profile: Profile,
-  chats: {
-    id: string,
-    version: string,
-    length: number,
-    list: Chat[],
-  },
-  onPress: (chat: Chat) => void,
+  item: Chat,
+  separators: { highlight: any, unhighlight: any },
+  id: string,
+  onPress: (item: Chat) => void,
 };
 
-export default class ChatList extends React.Component<Props, *> {
-  _renderItem = (
-    item: Chat,
-    separators: { highlight: any, unhighlight: any },
-    id: string,
-  ) => {
+export default class ListItem extends React.Component<Props> {
+  render() {
+    const { item, separators } = this.props;
     const m =
       item.messages && item.messages.length ? item.messages.list[0] : null;
 
     if (item.version === '0') return null;
 
-    // workaround web
+    // web workaround
     const propsToAdd = separators
       ? {
           onShowUnderlay: separators.highlight,
@@ -90,7 +52,7 @@ export default class ChatList extends React.Component<Props, *> {
               </Text>
               {!!m && (
                 <Text style={styles.date}>
-                  <Interval interval={3e4}>
+                  <Interval interval={6e4}>
                     {() => moment(m.createdAt).fromNow()}
                   </Interval>
                 </Text>
@@ -110,23 +72,6 @@ export default class ChatList extends React.Component<Props, *> {
           <Image style={styles.arrow} source={require('./arrow.png')} />
         </View>
       </TouchableOpacity>
-    );
-  };
-
-  render() {
-    const { profile: { uuid }, chats } = this.props;
-    const id = uuid.toString();
-    return (
-      <FlatList
-        ItemSeparatorComponent={Platform.select({
-          ios: () => <View style={[styles.separator]} />,
-        })}
-        data={chats.list.filter(i => !!i)}
-        keyExtractor={(item: Chat) => item.id}
-        renderItem={({ item, separators }) =>
-          this._renderItem(item, separators, id)
-        }
-      />
     );
   }
 }
@@ -151,7 +96,6 @@ const styles = StyleSheet.create({
   },
   inner: {
     flex: 1,
-    // justifyContent: 'flex-start',
   },
   innerTop: {
     flex: 1,
@@ -195,11 +139,5 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginLeft: 6,
     marginVertical: 5,
-  },
-  separator: {
-    width: width - 20,
-    marginLeft: 20,
-    borderBottomColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });

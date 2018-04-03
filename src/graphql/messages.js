@@ -3,11 +3,11 @@
 import gql from 'graphql-tag';
 
 export default gql`
-  subscription messages($from: Int = 0, $to: Int = 100, $chat: UUID!) {
-    chat @node(id: $chat) {
+  subscription messages($from: Int = 0, $to: Int, $chat: UUID!) {
+    chat @node(id: $chat) @static {
       id
-      mid: messages
       messages {
+        id
         length
         list: id @node @slice(begin: $from, end: $to) @static {
           _id: id
@@ -16,7 +16,7 @@ export default gql`
           sent
           received
           system
-          user @static {
+          user {
             _id: id
             name
             avatar: picture

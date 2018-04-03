@@ -3,36 +3,19 @@
 import { AsyncStorage } from 'react-native';
 import Auth0 from 'react-native-auth0';
 import decode from 'jwt-decode';
-import UUID from 'swarm-ron-uuid';
-import * as utils from './utils';
+import { provider2uuid, normalizePicture } from './profile';
+
+import type { Profile } from './profile';
+export type { Profile } from './profile';
 
 const KEY = '!profile';
-
-export type Profile = {
-  uuid: UUID,
-  nickname: string,
-  name: string,
-  picture: string,
-  updated_at: string,
-  email: string,
-  email_verified: boolean,
-  iss: string,
-  sub: string,
-  aud: string,
-  iat: number,
-  exp: number,
-  nonce: string,
-  credentials: {
-    idToken: string,
-    state: string,
-  },
-};
 
 export const getUserInfo = async (): Promise<Profile | void> => {
   const p = await AsyncStorage.getItem(KEY);
   if (p) {
     const parsed = JSON.parse(p);
-    parsed.uuid = utils.provider2uuid(parsed.sub);
+    parsed.uuid = provider2uuid(parsed.sub);
+    parsed.picture = normalizePicture(parsed);
     return parsed;
   }
 };
@@ -59,6 +42,7 @@ export const authorize = async (): Promise<Profile> => {
 
   await AsyncStorage.setItem(KEY, JSON.stringify(p));
 
-  p.uuid = utils.provider2uuid(p.sub);
+  p.uuid = provider2uuid(p.sub);
+  p.picture = normalizePicture(p);
   return p;
 };

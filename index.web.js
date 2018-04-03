@@ -2,7 +2,6 @@
 
 import { AppRegistry } from 'react-native';
 import App from './src/App';
-import './src/App.web.css';
 
 AppRegistry.registerComponent('SwarmChat', () => App);
 

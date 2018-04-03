@@ -11,11 +11,10 @@ type Props = {
 export default class Login extends React.Component<Props> {
   render() {
     return (
-      <View style={styles.cardItem}>
+      <View style={styles.container}>
         <Image source={require('./swarm.jpg')} style={styles.logo} />
         <Text style={styles.welcome}>SwarmDB Demo</Text>
         <Text style={styles.instructions}>Welcome.</Text>
-        <View style={styles.margin} />
         {this.props.loading ? (
           <Text>loading...</Text>
         ) : (
@@ -27,17 +26,17 @@ export default class Login extends React.Component<Props> {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
   logo: {
     width: 50,
     height: 50,
     borderRadius: 25,
     marginBottom: 20,
-  },
-  cardItem: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
   },
   welcome: {
     fontWeight: '900',
@@ -53,5 +52,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     lineHeight: 21,
   },
-  margin: {},
 });

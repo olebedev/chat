@@ -357,7 +357,6 @@ class GiftedChat extends React.Component {
 
   onKeyPress(e) {
     if (e.keyCode === 13) {
-      console.log('on enter press');
       e.preventDefault();
       setTimeout(() => {
         const text = this.state.text.trim();
