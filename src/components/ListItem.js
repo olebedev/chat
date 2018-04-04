@@ -10,6 +10,7 @@ import {
   Image,
   View,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 
 import type { Chat } from '../graphql';
@@ -44,7 +45,7 @@ export default class ListItem extends React.Component<Props> {
         {...propsToAdd}
         onPress={() => this.props.onPress(item)}>
         <View style={styles.cell}>
-          <Image style={styles.picture} source={{ uri: item.picture }} />
+          <FastImage style={styles.picture} source={{ uri: item.picture }} />
           <View style={styles.inner}>
             <View style={styles.innerTop}>
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>

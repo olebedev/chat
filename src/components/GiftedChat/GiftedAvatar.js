@@ -4,8 +4,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Color from './Color';
+import FastImage from 'react-native-fast-image';
 
-const { carrot, emerald, peterRiver, wisteria, alizarin, turquoise, midnightBlue } = Color;
+const {
+  carrot,
+  emerald,
+  peterRiver,
+  wisteria,
+  alizarin,
+  turquoise,
+  midnightBlue,
+} = Color;
 // TODO
 // 3 words name initials
 // handle only alpha numeric chars
@@ -29,7 +38,15 @@ export default class GiftedAvatar extends React.PureComponent {
 
     // inspired by https://github.com/wbinnssmith/react-user-avatar
     // colors from https://flatuicolors.com/
-    const colors = [carrot, emerald, peterRiver, wisteria, alizarin, turquoise, midnightBlue];
+    const colors = [
+      carrot,
+      emerald,
+      peterRiver,
+      wisteria,
+      alizarin,
+      turquoise,
+      midnightBlue,
+    ];
 
     this.avatarColor = colors[sumChars % colors.length];
   }
@@ -39,7 +56,7 @@ export default class GiftedAvatar extends React.PureComponent {
       return this.props.user.avatar();
     } else if (typeof this.props.user.avatar === 'string') {
       return (
-        <Image
+        <FastImage
           source={{ uri: this.props.user.avatar }}
           style={[styles.avatarStyle, this.props.avatarStyle]}
         />
@@ -56,7 +73,11 @@ export default class GiftedAvatar extends React.PureComponent {
   }
 
   renderInitials() {
-    return <Text style={[styles.textStyle, this.props.textStyle]}>{this.avatarName}</Text>;
+    return (
+      <Text style={[styles.textStyle, this.props.textStyle]}>
+        {this.avatarName}
+      </Text>
+    );
   }
 
   render() {
@@ -64,7 +85,11 @@ export default class GiftedAvatar extends React.PureComponent {
       // render placeholder
       return (
         <View
-          style={[styles.avatarStyle, styles.avatarTransparent, this.props.avatarStyle]}
+          style={[
+            styles.avatarStyle,
+            styles.avatarTransparent,
+            this.props.avatarStyle,
+          ]}
           accessibilityTraits="image"
         />
       );
@@ -79,8 +104,7 @@ export default class GiftedAvatar extends React.PureComponent {
               this.props.onPress(other);
             }
           }}
-          accessibilityTraits="image"
-        >
+          accessibilityTraits="image">
           {this.renderAvatar()}
         </TouchableOpacity>
       );
@@ -97,9 +121,12 @@ export default class GiftedAvatar extends React.PureComponent {
             this.props.onPress(other);
           }
         }}
-        style={[styles.avatarStyle, { backgroundColor: this.avatarColor }, this.props.avatarStyle]}
-        accessibilityTraits="image"
-      >
+        style={[
+          styles.avatarStyle,
+          { backgroundColor: this.avatarColor },
+          this.props.avatarStyle,
+        ]}
+        accessibilityTraits="image">
         {this.renderInitials()}
       </TouchableOpacity>
     );

@@ -1,7 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 import type { Profile } from '../graphql';
 import { smallAvaSize } from './vars';
@@ -9,7 +10,7 @@ import { smallAvaSize } from './vars';
 const Avatar = ({ profile }: { profile: Profile }) => (
   <TouchableOpacity>
     <View style={styles.avatarSmallWrap}>
-      <Image style={styles.avatarSmall} source={{ uri: profile.picture }} />
+      <FastImage style={styles.avatarSmall} source={{ uri: profile.picture }} />
     </View>
   </TouchableOpacity>
 );
