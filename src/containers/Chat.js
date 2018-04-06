@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { View, ActivityIndicator, Clipboard, Platform } from 'react-native';
+import { View, Clipboard, Platform } from 'react-native';
 import { UUID } from 'swarm-ron';
 import { GraphQL } from 'swarm-react';
 import type { Response } from 'swarm-react';
@@ -78,7 +78,7 @@ export default class extends React.Component<Props> {
           text: m.text,
         },
       }).catch(err => {
-        console.log({ err });
+        console.error(err);
       });
     }
   };
@@ -101,9 +101,6 @@ export default class extends React.Component<Props> {
             ).filter(m => m && m.text);
             return (
               <GiftedChat
-                renderLoading={() => (
-                  <ActivityIndicator size="small" color="#666" />
-                )}
                 messages={messages}
                 onLongPress={
                   Platform.OS === 'web' ? undefined : this.onLongPress

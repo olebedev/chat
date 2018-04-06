@@ -105,10 +105,14 @@ export default class Home extends React.Component<Props> {
             if (!update.data || !update.data.chats || !update.data.user) {
               return <ActivityIndicator size="small" color="#666" />;
             }
+
+            const chats = update.data.user.chats
+              ? update.data.user.chats.list.concat(update.data.chats.list)
+              : update.data.chats.list;
             return (
               <ChatList
                 profile={profile}
-                chats={update.data.chats}
+                chats={chats}
                 onPress={chat => navigation.navigate('Chat', { chat, profile })}
               />
             );

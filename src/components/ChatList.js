@@ -9,12 +9,7 @@ import ListItem from './ListItem';
 
 type Props = {
   profile: Profile,
-  chats: {
-    id: string,
-    version: string,
-    length: number,
-    list: Chat[],
-  },
+  chats: Chat[],
   onPress: (chat: Chat) => void,
 };
 
@@ -27,7 +22,7 @@ export default class ChatList extends React.Component<Props> {
         ItemSeparatorComponent={Platform.select({
           ios: () => <View style={[styles.separator]} />,
         })}
-        data={chats.list.filter(i => !!i)}
+        data={chats.filter(i => !!i)}
         keyExtractor={(item: Chat) => item.id}
         renderItem={({ item, separators }) => (
           <ListItem

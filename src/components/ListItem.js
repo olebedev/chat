@@ -49,7 +49,7 @@ export default class ListItem extends React.Component<Props> {
           <View style={styles.inner}>
             <View style={styles.innerTop}>
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
-                {item.title}
+                {item.private ? '🔒' + item.title : item.title}
               </Text>
               {!!m && (
                 <Text style={styles.date}>

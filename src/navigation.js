@@ -29,7 +29,7 @@ export default StackNavigator({
     screen: Chat,
     navigationOptions: ({ navigation: { state: { params: { chat } } } }) => {
       return {
-        title: chat.title,
+        title: chat.private ? '🔒' + chat.title : chat.title,
         headerStyle: {
           backgroundColor: 'white',
         },

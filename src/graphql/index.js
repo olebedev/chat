@@ -8,14 +8,6 @@ export { default as createMessage } from './createMessage';
 export { default as deleteMessage } from './deleteMessage';
 export type { Profile } from '../auth0';
 
-export type User = {
-  id: string,
-  version: string,
-  username: string,
-  name: string,
-  picture: string,
-};
-
 export type Author = {
   _id: string,
   name: string,
@@ -34,12 +26,24 @@ export type Message = {
 
 export type Chat = {
   id: string,
-  version: string | void,
-  picture: string | void,
-  title: string | void,
+  version: string,
+  picture: string,
+  title: string,
+  private: true | void,
   messages: {
     length: number,
     id: string,
     list: Message[],
+  },
+};
+
+export type User = {
+  id: string,
+  version: string,
+  username: string,
+  name: string,
+  picture: string,
+  chats: {
+    list: Chat[],
   },
 };
