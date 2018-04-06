@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import Color from './Color';
-import FastImage from 'react-native-fast-image';
+import FastImage from '../Image';
 
 const {
   carrot,

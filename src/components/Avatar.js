@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import FastImage from './Image';
 
 import type { Profile } from '../graphql';
 import { smallAvaSize } from './vars';

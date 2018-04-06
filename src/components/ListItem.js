@@ -10,7 +10,7 @@ import {
   Image,
   View,
 } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import FastImage from './Image';
 import moment from 'moment';
 
 import type { Chat } from '../graphql';
