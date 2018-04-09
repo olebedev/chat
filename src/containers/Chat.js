@@ -94,11 +94,9 @@ export default class extends React.Component<Props> {
           mutations={{ createMessage, deleteMessage }}>
           {(update: Response<{ chat: Chat }>) => {
             this.lastUpdate = update;
-            const messages = (
-              (update.data && update.data.chat.messages.list) ||
-              chat.messages.list ||
-              []
-            ).filter(m => m && m.text);
+            const messages = update.data
+              ? update.data.chat.messages.list
+              : chat.messages.list;
             return (
               <GiftedChat
                 messages={messages}

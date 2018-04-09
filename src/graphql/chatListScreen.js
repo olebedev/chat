@@ -6,7 +6,7 @@ const chats = `
 id
 version
 length
-list: id @node @slice(begin: $from, end: $to) {
+list: id @slice(begin: $from, end: $to) {
   id
   version
   title
@@ -16,7 +16,7 @@ list: id @node @slice(begin: $from, end: $to) {
     id
     length
     version
-    list: id @node @slice(begin: 0, end: 1) @static {
+    list: id @slice(begin: 0, end: 1) @static {
       _id: id
       createdAt: id @date
       text

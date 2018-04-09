@@ -6,13 +6,19 @@ import { AppState, Platform } from 'react-native';
 import SwarmDB from 'swarm-db';
 import { Provider } from 'swarm-react';
 import { Verbose } from 'swarm-client/lib/connection';
-
 import Storage from 'swarm-client/lib/asyncStorage';
 
-export default class Screens extends React.Component<{ children: React.Node }> {
+import type { Profile } from '../graphql';
+
+type Props = {
+  profile: Profile,
+  children: React.Node,
+};
+
+export default class Screens extends React.Component<Props> {
   swarm: SwarmDB;
 
-  constructor(props: { children: React.Node }, context: any) {
+  constructor(props: Props, context: any) {
     super(props, context);
     this.swarm = new SwarmDB({
       storage: new Storage(),
@@ -20,6 +26,7 @@ export default class Screens extends React.Component<{ children: React.Node }> {
         ? new Verbose('wss://swarmdb.ngrok.io')
         : 'wss://swarm.toscale.co',
       db: {
+        auth: props.profile.credentials.idToken,
         name: __DEV__ // eslint-disable-line
           ? 'chat'
           : 'default',

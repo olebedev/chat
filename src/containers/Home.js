@@ -35,18 +35,14 @@ export default class Home extends React.Component<Props> {
   once: boolean;
   once = false;
 
-  // check if need to create chats of user
+  // check if need to push user data to the server
   checkOnce = async (r: Response<ChatListScreenResponse>): Promise<void> => {
     if (this.once) return;
-
     const { data } = r;
     if (!data) return;
-
     this.once = true;
 
-    const { uuid, picture } = this.props.screenProps.profile;
-
-    if (data.user.version === '0' || picture !== data.user.picture) {
+    if (data.user.version === '0') {
       if (r.mutations && r.mutations.createUser) {
         const {
           uuid,
@@ -58,36 +54,15 @@ export default class Home extends React.Component<Props> {
         } = this.props.screenProps.profile;
         await r.mutations.createUser({
           id: uuid,
-          payload: { nickname, name, picture, updated_at, email },
-          skipAdd: data.user.version !== '0',
+          payload: {
+            nickname,
+            name,
+            picture,
+            updated_at,
+            email,
+            chats: r.uuid(),
+          },
         });
-      }
-    }
-
-    if (data.chats.version === '0') {
-      if (r.mutations && r.mutations.createChat) {
-        const cc = r.mutations.createChat;
-        for (const title of ['Random', 'General', 'Boom']) {
-          const id = r.uuid(); // chat
-          const ms = r.uuid(); // messages for the chat
-          const mid = r.uuid(); // system message
-
-          await cc({
-            id,
-            payload: {
-              picture: `https://i1.wp.com/cdn.auth0.com/avatars/${title[0].toLowerCase()}.png?ssl=1`,
-              title,
-              messages: ms,
-            },
-            ms,
-            mid,
-            message: {
-              text: 'chat created',
-              system: true,
-              user: uuid,
-            },
-          });
-        }
       }
     }
   };

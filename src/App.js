@@ -69,7 +69,7 @@ export default class App extends React.Component<{}, State> {
         {!this.state.profile ? (
           <Login loading={this.state.loading} onPressNext={this.onNext} />
         ) : (
-          <Swarm>
+          <Swarm profile={this.state.profile}>
             <Stack
               screenProps={{
                 logout: this.onLogout,
