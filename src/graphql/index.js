@@ -16,34 +16,25 @@ export type Author = {
 
 export type Message = {
   _id: string,
-  createdAt: string | Date,
+  createdAt: Date,
   text: string,
   user: Author,
   system: boolean,
-  sent: boolean | void,
-  received: boolean | void,
 };
 
 export type Chat = {
   id: string,
-  version: string,
   picture: string,
   title: string,
-  private: true | void,
   messages: {
-    length: number,
     id: string,
+    length: number,
     list: Message[],
   },
 };
 
 export type User = {
   id: string,
-  version: string,
   username: string,
-  name: string,
   picture: string,
-  chats: {
-    list: Chat[],
-  },
 };

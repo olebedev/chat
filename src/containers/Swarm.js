@@ -1,7 +1,7 @@
 // @flow
 
 import * as React from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 
 import SwarmDB from 'swarm-db';
 import { Provider } from 'swarm-react';
@@ -22,27 +22,23 @@ export default class Screens extends React.Component<Props> {
     super(props, context);
     this.swarm = new SwarmDB({
       storage: new Storage(),
-      upstream: __DEV__ // eslint-disable-line
-        ? new Verbose('wss://swarmdb.ngrok.io')
-        : 'wss://swarm.toscale.co',
+      upstream: new Verbose('ws://0.0.0.0:31415'),
       db: {
+        clockLen: 7,
         auth: props.profile.credentials.idToken,
-        name: __DEV__ // eslint-disable-line
-          ? 'chat'
-          : 'default',
+        name: 'default',
       },
     });
-    if (Platform.OS !== 'web') {
-      AppState.addEventListener('change', this._handleAppStateChange);
-    }
+    AppState.addEventListener('change', this._handleAppStateChange);
   }
 
   componentWillUnmount() {
+    AppState.removeEventListener('change', this._handleAppStateChange);
     this.swarm.close();
   }
 
   _handleAppStateChange = (state: string): void => {
-    if (state === 'active') {
+    if (AppState.currentState === 'active') {
       this.swarm.close().then(() => {
         this.swarm.open();
       });

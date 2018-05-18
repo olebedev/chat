@@ -14,9 +14,7 @@ import { chatListScreen, createUser, createChat } from '../graphql';
 
 type ChatListScreenResponse = {
   chats: {
-    id: string,
     version: string,
-    length: number,
     list: Chat[],
   },
   user: User,
@@ -35,32 +33,51 @@ export default class Home extends React.Component<Props> {
   once: boolean;
   once = false;
 
-  // check if need to push user data to the server
-  checkOnce = async (r: Response<ChatListScreenResponse>): Promise<void> => {
-    if (this.once) return;
+  // create chats and user object if needed
+  createIfNotExist = (r: Response<ChatListScreenResponse>): void => {
     const { data } = r;
-    if (!data) return;
+    if (this.once || !r.uuid || !data) return;
     this.once = true;
 
+    // create user profile
     if (data.user.version === '0') {
-      if (r.mutations && r.mutations.createUser) {
-        const {
-          uuid,
+      const { uuid, nickname, name, picture, updated_at, email } = this.props.screenProps.profile;
+      r.mutations.createUser({
+        id: uuid,
+        payload: {
           nickname,
           name,
           picture,
           updated_at,
           email,
-        } = this.props.screenProps.profile;
-        await r.mutations.createUser({
-          id: uuid,
+          chats: r.uuid(),
+        },
+      });
+    }
+
+    if (data.chats.version === '0') {
+      const {
+        uuid,
+        mutations: { createChat },
+      } = r;
+      for (const title of ['Random', 'General']) {
+        const id = uuid(); // chat
+        const ms = uuid(); // messages for the chat
+        const mid = uuid(); // system message
+
+        createChat({
+          id,
           payload: {
-            nickname,
-            name,
-            picture,
-            updated_at,
-            email,
-            chats: r.uuid(),
+            picture: `https://i1.wp.com/cdn.auth0.com/avatars/${title[0].toLowerCase()}.png?ssl=1`,
+            title,
+            messages: ms,
+          },
+          ms,
+          mid,
+          message: {
+            text: 'Chat created',
+            system: true,
+            user: this.props.screenProps.profile.uuid,
           },
         });
       }
@@ -68,27 +85,27 @@ export default class Home extends React.Component<Props> {
   };
 
   render() {
-    const { navigation, screenProps: { profile } } = this.props;
+    const {
+      navigation: { navigate },
+      screenProps: { profile },
+    } = this.props;
     return (
       <View style={styles.container}>
         <GraphQL
           query={chatListScreen}
-          args={{ user: profile.uuid }}
+          variables={{ user: profile.uuid }}
           mutations={{ createChat, createUser }}>
           {(update: Response<ChatListScreenResponse>): React.Node => {
-            this.checkOnce(update);
-            if (!update.data || !update.data.chats || !update.data.user) {
+            const { data } = update;
+            if (!data) {
               return <ActivityIndicator size="small" color="#666" />;
             }
-
-            const chats = update.data.user.chats
-              ? update.data.user.chats.list.concat(update.data.chats.list)
-              : update.data.chats.list;
+            this.createIfNotExist(update);
             return (
               <ChatList
                 profile={profile}
-                chats={chats}
-                onPress={chat => navigation.navigate('Chat', { chat, profile })}
+                chats={data.chats.list}
+                onPress={chat => navigate('Chat', { chat, profile })}
               />
             );
           }}

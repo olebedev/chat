@@ -15,8 +15,10 @@ type Props = {
 
 export default class ChatList extends React.Component<Props> {
   render() {
-    const { profile: { uuid }, chats } = this.props;
-    const id = uuid.toString();
+    const {
+      profile: { uuid },
+      chats,
+    } = this.props;
     return (
       <FlatList
         ItemSeparatorComponent={Platform.select({
@@ -28,7 +30,7 @@ export default class ChatList extends React.Component<Props> {
           <ListItem
             item={item}
             separators={separators}
-            id={id}
+            id={uuid.toString()}
             onPress={this.props.onPress}
           />
         )}

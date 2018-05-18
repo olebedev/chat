@@ -40,11 +40,7 @@ export default class extends React.Component<Props> {
     );
   };
 
-  onPressAction = (
-    options: string[],
-    message: Message,
-    buttonIndex: number,
-  ): void => {
+  onPressAction = (options: string[], message: Message, buttonIndex: number): void => {
     const { chat } = this.props.navigation.state.params;
     switch (buttonIndex) {
       case options.indexOf('Copy'):
@@ -65,12 +61,11 @@ export default class extends React.Component<Props> {
 
   onSend = async (messages: Message[]): Promise<void> => {
     const { chat, profile } = this.props.navigation.state.params;
-    const { createMessage: cm } = this.lastUpdate.mutations || {};
-    if (!cm) {
-      return;
-    }
+    const { createMessage: cm } = this.lastUpdate.mutations;
+
     for (const m of messages) {
-      await cm({
+      cm({
+        // $FlowFixMe: we have uuid function here 100% for sure
         id: this.lastUpdate.uuid(),
         chat: chat.messages.id,
         payload: {
@@ -85,26 +80,20 @@ export default class extends React.Component<Props> {
 
   render() {
     const { chat, profile } = this.props.navigation.state.params;
-    const _id = profile.uuid.toString();
     return (
       <View style={{ backgroundColor: 'white', flex: 1 }}>
         <GraphQL
           query={messages}
-          args={{ chat: chat.id }}
+          variables={{ chat: chat.id }}
           mutations={{ createMessage, deleteMessage }}>
           {(update: Response<{ chat: Chat }>) => {
             this.lastUpdate = update;
-            const messages = update.data
-              ? update.data.chat.messages.list
-              : chat.messages.list;
             return (
               <GiftedChat
-                messages={messages}
-                onLongPress={
-                  Platform.OS === 'web' ? undefined : this.onLongPress
-                }
+                messages={update.data ? update.data.chat.messages.list : chat.messages.list}
+                onLongPress={Platform.OS === 'web' ? undefined : this.onLongPress}
                 onSend={update.data ? this.onSend : undefined}
-                user={{ _id }}
+                user={{ _id: profile.uuid.toString() }}
               />
             );
           }}

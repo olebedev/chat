@@ -27,10 +27,7 @@ type Props = {
 export default class ListItem extends React.Component<Props> {
   render() {
     const { item, separators } = this.props;
-    const m =
-      item.messages && item.messages.length ? item.messages.list[0] : null;
-
-    if (item.version === '0') return null;
+    const m = item.messages && item.messages.length ? item.messages.list[0] : null;
 
     // web workaround
     const propsToAdd = separators
@@ -41,30 +38,23 @@ export default class ListItem extends React.Component<Props> {
       : {};
 
     return (
-      <TouchableOpacity
-        {...propsToAdd}
-        onPress={() => this.props.onPress(item)}>
+      <TouchableOpacity {...propsToAdd} onPress={() => this.props.onPress(item)}>
         <View style={styles.cell}>
           <FastImage style={styles.picture} source={{ uri: item.picture }} />
           <View style={styles.inner}>
             <View style={styles.innerTop}>
               <Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
-                {item.private ? '🔒' + item.title : item.title}
+                {item.title}
               </Text>
               {!!m && (
                 <Text style={styles.date}>
-                  <Interval interval={6e4}>
-                    {() => moment(m.createdAt).fromNow()}
-                  </Interval>
+                  <Interval interval={6e4}>{() => moment(m.createdAt).fromNow()}</Interval>
                 </Text>
               )}
             </View>
             <View style={styles.innerBottom}>
               {!!m && (
-                <Text
-                  style={styles.message}
-                  numberOfLines={2}
-                  ellipsizeMode="tail">
+                <Text style={styles.message} numberOfLines={2} ellipsizeMode="tail">
                   {m.text}
                 </Text>
               )}

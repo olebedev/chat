@@ -5,7 +5,6 @@ import gql from 'graphql-tag';
 export default gql`
   subscription messages($from: Int = 0, $to: Int, $chat: UUID!) {
     chat @node(id: $chat) @static {
-      id
       messages {
         id
         length
