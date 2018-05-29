@@ -2,9 +2,9 @@
 
 import * as React from 'react';
 import { View, Clipboard, Platform } from 'react-native';
-import { UUID } from 'swarm-ron';
-import { GraphQL } from 'swarm-react';
-import type { Response } from 'swarm-react';
+import { UUID } from '@swarm/db';
+import { GraphQL } from '@swarm/react';
+import type { Response } from '@swarm/react';
 
 import { GiftedChat } from '../components/GiftedChat/GiftedChat';
 import type { NavigationScreenProp } from 'react-navigation';

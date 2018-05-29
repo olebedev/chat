@@ -1,6 +1,6 @@
 // @flow
 
-import UUID, { ERROR, BASE64 } from 'swarm-ron-uuid';
+import UUID, { ERROR, BASE64 } from '@swarm/ron-uuid';
 
 export type Profile = {
   uuid: UUID,

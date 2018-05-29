@@ -3,9 +3,9 @@
 import * as React from 'react';
 import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import type { NavigationScreenProp } from 'react-navigation';
-import SwarmDB from 'swarm-db';
-import { GraphQL } from 'swarm-react';
-import type { Response } from 'swarm-react';
+import SwarmDB from '@swarm/db';
+import { GraphQL } from '@swarm/react';
+import type { Response } from '@swarm/react';
 
 import ChatList from '../components/ChatList';
 import type { User, Chat, Profile } from '../graphql';

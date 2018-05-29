@@ -3,10 +3,9 @@
 import * as React from 'react';
 import { AppState } from 'react-native';
 
-import SwarmDB from 'swarm-db';
-import { Provider } from 'swarm-react';
-import { Verbose } from 'swarm-client/lib/connection';
-import Storage from 'swarm-client/lib/asyncStorage';
+import SwarmDB, { Verbose } from '@swarm/db';
+import { Provider } from '@swarm/react';
+import Storage from '@swarm/client/lib/asyncStorage';
 
 import type { Profile } from '../graphql';
 
